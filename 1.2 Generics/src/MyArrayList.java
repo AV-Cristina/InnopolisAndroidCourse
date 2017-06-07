@@ -20,12 +20,10 @@ public class MyArrayList<Item> implements Iterable<Item>{
 
     public void addLast(Item item) {
         int oldCapacity = list.length;
-        //System.out.println("old cap = " + list.length);  ///
         // проверяем достаточно ли места
         // если недостаточно, то создаем новый массив размерностью newCapacity
         if ((this.size) == oldCapacity) {
             int newCapacity = (oldCapacity * 3) / 2 + 1;
-            //System.out.println("new cap = " + newCapacity);  ///
             Item[] oldList = this.list;
             this.list = (Item[]) new Object[newCapacity];
             // переписываем в новый массив предыдущий массив
