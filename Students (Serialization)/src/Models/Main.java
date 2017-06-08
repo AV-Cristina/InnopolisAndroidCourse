@@ -27,7 +27,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        // String surname, String secondName, Date dateOfBirth, Long groupId, List<Contact> contacts)
         Students student1 = new Students("Афанасьева Кристина Викторовна", "Кристина", "Афанасьева", "Викторовна", dateOfBirth, group1.getGroupId(), contacts);
 
         studentList.add(student1);
