@@ -11,6 +11,13 @@ import java.util.ArrayList;
  */
 public class Main {
     ArrayList<Students> studentList= new ArrayList<>();
+    
+    Group group1 = new Group(1l, "Android_01");
+
+    ArrayList<Students> studentList = new ArrayList<>();
+
+    ArrayList<Contact> contacts = new ArrayList<>();
+    
 
     try {
          FileOutputStream fs = new FileOutputStream("Students.ser");
