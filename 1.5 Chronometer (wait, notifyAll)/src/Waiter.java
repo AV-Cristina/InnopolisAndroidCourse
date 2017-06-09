@@ -26,7 +26,6 @@ public class Waiter implements Runnable{
                     System.out.println("Прошло 5 секунд");
                 }
             }
-
         }
     }
 }
