@@ -21,9 +21,7 @@ public class Chronometer implements Runnable{
                 System.out.println("Sorry, something going wrong");
                 e.printStackTrace();
             }
-
         }
-
 
     }
 }
