@@ -66,7 +66,7 @@ public class Students implements Serializable {
         this.name = name;
         this.surname = surname;
         this.lastName = lastName;
-        this.id = System.currentTimeMillis() + (Math.random()*42);;
+        this.id = (long)(Math.random()) + System.currentTimeMillis();
         this.contacts = new ArrayList<>();
     }
 
