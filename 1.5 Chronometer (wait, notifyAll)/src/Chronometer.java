@@ -20,7 +20,6 @@ public class Chronometer implements Runnable {
                     long timeAfterStart = System.currentTimeMillis() - startSession;
                     System.out.println(i+1 + ") С начала сессии прошло: " + timeAfterStart);
                     tm.setTm(timeAfterStart);
-                    //tm.notify();
                     tm.notifyAll();
                 }
             } catch (InterruptedException e) {
@@ -28,6 +27,5 @@ public class Chronometer implements Runnable {
             }
         }
     }
-
 
 }
