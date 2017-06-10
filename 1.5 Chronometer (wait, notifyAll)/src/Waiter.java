@@ -1,4 +1,4 @@
- * Created by Cristina on 09.06.2017.
+ /* Created by Cristina on 09.06.2017.
  */
 public class Waiter implements Runnable{
     private int timeout;
