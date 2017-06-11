@@ -13,20 +13,21 @@ public class Main {
             ArrayList<String> filePathList = new ArrayList<>();
 
             int fileCount = 3;
-
+                
+            /*
             filePathList.add("C:\\Users\\admin\\IdeaProjects\\Parser\\src\\Data\\data000.txt");
             filePathList.add("C:\\Users\\admin\\IdeaProjects\\Parser\\src\\Data\\data001.txt");
             filePathList.add("C:\\Users\\admin\\IdeaProjects\\Parser\\src\\Data\\data002.txt");
-
-            /*
+            */
+            
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
 
             for (int i = 1; i <= fileCount; i++)
             {
                 try {
                     System.out.print("Введите путь к " + i + " файлу:" );
                     String filePath = reader.readLine();
+                    filePath.replace("\\", "\\\\");
                     filePathList.add(filePath);
                 }
                 catch (IOException e){
@@ -34,7 +35,6 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            */
 
             ArrayList<String> wordList = new ArrayList<>();
 
