@@ -12,6 +12,9 @@ public class Waiter implements  Runnable{
 
     private Message msg;
     private String filePath;
+    private static volatile boolean exitFlag = false;
+    String name;
+
 
     public Waiter(Message msg, String filePath) {
         this.msg = msg;
@@ -21,43 +24,51 @@ public class Waiter implements  Runnable{
 
     @Override
     public void run() {
+        String name = Thread.currentThread().getName();
+        System.out.println(System.currentTimeMillis() + ": "+ name + ": Стартовал поток waiter");
+
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(filePath), "windows-1251"))){
 
             String line;
 
-            while ((line = reader.readLine()) != null) {
+            while (((line = reader.readLine()) != null) && (exitFlag != true)) {
                 for (String word : line.split(" ")) {
-
+                    if (exitFlag) { break; }
                     if (wordCheck(word)) {
+                        if (exitFlag) { break; }
+                        System.out.println(System.currentTimeMillis() + ": "+ name + ": Проверка слова (" + word + ") = true");
                         synchronized (msg) {
-                            try {
-                                msg.wait();
-                                if (msg.addWord(word)){
-                                    System.out.println("Добавлено слово: " + word);
-                                }
-                                else {
-                                    msg.setCorrect(false);
-                                    System.out.println("Слово: " + word + " уже было добавлено ранее");
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+
+                            System.out.println(System.currentTimeMillis() + ": "+ name + ": запись begin");
+                            if (msg.addWord(word)){
+                                System.out.println(System.currentTimeMillis() + ": "+ name + ": Добавлено слово: " + word);
                             }
+                            else {
+                                msg.setCorrect(false);
+                                System.out.println(System.currentTimeMillis() + ": "+ name + ": Слово: " + word + " уже было добавлено ранее");
+                                exitFlag=true;
+                                break;
+                            }
+
+                            System.out.println(System.currentTimeMillis() + ": "+ name + ": запись end");
                         }
+
                     }
                     else {
-                        msg.setCorrect(false);
-                        System.out.println("Текст не должен содержать инностранных символов, только кириллицу, знаки препинания и цифры");
+                        System.out.println(System.currentTimeMillis() + ": "+ name + ": Проверка слова (" + word + ") = false");
+                        System.out.println(System.currentTimeMillis() + ": "+ name + ": Текст не должен содержать иностранных символов, только кириллицу, знаки препинания и цифры " + word);
+                        exitFlag=true;
+                        break;
                     }
                 }
+                if (exitFlag) { break; }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
 
     private static boolean wordCheck (String word){
         Pattern pattern = Pattern.compile(
