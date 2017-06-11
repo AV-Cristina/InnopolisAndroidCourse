@@ -13,6 +13,7 @@ public class Notifier implements Runnable {
 
     @Override
     public void run() {
+        System.out.println(System.currentTimeMillis() + ": " + Thread.currentThread().getName() + ": Стартовал главный поток ");
         while (true) {
             synchronized (msg) {
                 if (msg.isCorrect()) {
