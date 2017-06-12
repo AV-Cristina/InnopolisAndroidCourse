@@ -11,9 +11,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +31,6 @@ public class RefMain {
 
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         Date dateOfBirth = null;
-
         try {
             dateOfBirth = format.parse("01.02.1987");
         } catch (Exception e) {
@@ -50,51 +51,99 @@ public class RefMain {
         firstName.setAccessible(true);
         System.out.println(firstName.get(student1));
 
-        serialXML(student1);
-
         /*
         Field stuId = student1.getClass().getDeclaredField("id");
         stuId.setAccessible(true);
         //Field modifiersField = Field.class.getDeclaredField("modifiers");
         //stuId.setInt(stuId, stuId.getModifiers() & ~Modifier.FINAL);
         stuId.set(null,1l);
-        System.out.println(stuId.get(student1));*/
+        System.out.println(stuId.get(student1));
+        */
+
+        serializeToXML(student1);
     }
 
 
+    private static void serializeToXML(Students student1)throws Exception{
 
-    private static void serialXML(Students student1)throws Exception{
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
 
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
+        // Класс
+        Document doc = builder.newDocument();
+        Element root = doc.createElement("object");
+        doc.appendChild(root);
 
-            // root elements
-            Document doc = builder.newDocument();
-            Element rootElement = doc.createElement(student1.getClass().getName());
-            doc.appendChild(rootElement);
+        Attr attr = doc.createAttribute("type");
+        attr.setValue(student1.getClass().getTypeName());
+        root.setAttributeNode(attr);
 
-            // Student elements
-            Element objectType = doc.createElement(student1.getClass().getTypeName());
-            rootElement.appendChild(objectType);
+        // Поля класса
+        for (Field f : student1.getClass().getDeclaredFields()) {
+            Element node = doc.createElement("field");
+            root.appendChild(node);
+            f.setAccessible(true);
 
-            for (Field ft : student1.getClass().getDeclaredFields()) {
-                Attr attr = doc.createAttribute("type");
-                attr.setValue(ft.getName());
-                objectType.setAttributeNode(attr);
+            attr = doc.createAttribute("type");
+            attr.setValue(f.getType().getSimpleName()); // имя класса
+            //attr.setValue(f.getType().getName());     // имя класса и пакета
+            node.setAttributeNode(attr);
+
+            attr = doc.createAttribute("id");
+            attr.setValue(f.getName());
+            node.setAttributeNode(attr);
+
+            attr = doc.createAttribute("value");
+            attr.setValue(f.get(student1).toString());
+            node.setAttributeNode(attr);
+        }
+
+        // Методы класса
+        for (Method m : student1.getClass().getDeclaredMethods()) {
+            Element node = doc.createElement("method");
+            root.appendChild(node);
+            m.setAccessible(true);
+
+            attr = doc.createAttribute("id");
+            attr.setValue(m.getName());
+            node.setAttributeNode(attr);
+
+            attr = doc.createAttribute("return");
+            attr.setValue(m.getGenericReturnType().getTypeName());
+            node.setAttributeNode(attr);
+
+            // Аргументы методов класса
+            if (m.getParameterCount() > 0) {
+                System.out.println("ParameterCount = " + m.getParameterCount());
+                int i = 1;
+                for (Class paramTypes : m.getParameterTypes()) {
+                    Element childNode = doc.createElement("arg");
+                    node.appendChild(childNode);
+                    m.setAccessible(true);
+
+                    attr = doc.createAttribute("type");
+                    attr.setValue(paramTypes.getSimpleName());
+                    childNode.setAttributeNode(attr);
+
+                    attr = doc.createAttribute("id");
+                    attr.setValue("arg" + i);
+                    childNode.setAttributeNode(attr);
+
+                    i++;
+                }
             }
+        }
 
         // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("C:\\Users\\admin\\IdeaProjects\\Students\\src\\Output\\students.xml"));
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File("C:\\Users\\admin\\IdeaProjects\\Students\\src\\Output\\students.xml"));
 
+        // Output to console for testing
+        // StreamResult result = new StreamResult(System.out);
+        transformer.transform(source, result);
 
-            // Output to console for testing
-            // StreamResult result = new StreamResult(System.out);
-            transformer.transform(source, result);
-
-            System.out.println("File saved!");
+        System.out.println("Class structure was saved in XML file");
         }
     }
-
