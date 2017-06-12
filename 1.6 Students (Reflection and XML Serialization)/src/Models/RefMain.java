@@ -64,7 +64,7 @@ public class RefMain {
     }
 
 
-    private static void serializeToXML(Students student1)throws Exception{
+    private static void serializeToXML(Students student)throws Exception{
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -75,11 +75,11 @@ public class RefMain {
         doc.appendChild(root);
 
         Attr attr = doc.createAttribute("type");
-        attr.setValue(student1.getClass().getTypeName());
+        attr.setValue(student.getClass().getTypeName());
         root.setAttributeNode(attr);
 
         // Поля класса
-        for (Field f : student1.getClass().getDeclaredFields()) {
+        for (Field f : student.getClass().getDeclaredFields()) {
             Element node = doc.createElement("field");
             root.appendChild(node);
             f.setAccessible(true);
@@ -94,12 +94,12 @@ public class RefMain {
             node.setAttributeNode(attr);
 
             attr = doc.createAttribute("value");
-            attr.setValue(f.get(student1).toString());
+            attr.setValue(f.get(student).toString());
             node.setAttributeNode(attr);
         }
 
         // Методы класса
-        for (Method m : student1.getClass().getDeclaredMethods()) {
+        for (Method m : student.getClass().getDeclaredMethods()) {
             Element node = doc.createElement("method");
             root.appendChild(node);
             m.setAccessible(true);
