@@ -1,51 +1,44 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
 
 /**
  * Created by Cristina on 12.06.2017.
  */
 public class Message {
-    HashMap<Integer, Integer> numbers;
-    boolean isFiveTimes;
-    Integer number;
+    private HashMap<Integer, Integer> numbers;  // значение, количество сгенерированных чисел
+    private Integer number;                     // случайное число, отправляемое генератором
+    private boolean isFiveTimes;                // встретилось ли какое-либо число 5 раз
+    private long time;                          // время, прошедшее с момента запуска генератора
 
-    public Message(HashMap<Integer, Integer> numbers, boolean isFiveTimes, Integer number) {
+    public Message(HashMap<Integer, Integer> numbers, boolean isFiveTimes, Integer number, Integer time) {
         this.numbers = numbers;
-        this.isFiveTimes = isFiveTimes;
         this.number = number;
+        this.isFiveTimes = isFiveTimes;
+        this.time = time;
     }
 
-
-    public boolean setNumders(Integer number) {
-        boolean isCon = false;
-        for (Map.Entry<Integer, Integer> pair : numbers.entrySet()) {
-            if (number.equals(pair.getKey())){
-                Integer Val = pair.getValue();
-                if (Val < 5)
-                {
-                    ++Val;
-                    pair.setValue(Val);
-                    System.out.println(System.currentTimeMillis() + " " + pair.getKey() + " добавлено " + pair.getValue());
-                    isCon = true;
+    public void setNumbers(Integer number) {
+        if (numbers.containsKey(number)){
+            // поиск элемента с ключом, равным number
+            for (Map.Entry<Integer, Integer> pair : numbers.entrySet()) {
+                if (number.equals(pair.getKey())) {
+                    if (pair.getValue() == 4) {
+                        System.out.println("Завершение работы: число " + number + " было добавлено 5 раз");
+                        isFiveTimes = true;
+                    }
+                    pair.setValue(pair.getValue() + 1);
                     break;
                 }
-                else {this.isFiveTimes = true;
-                    System.out.println("5 раз");
-                    return false;}
             }
         }
-        if (!isCon) {numbers.put(number, 1);}
-        return true;
+        else {
+            // добавляем новое значение
+            numbers.put(number, 1);
+        }
     }
 
     public boolean isFiveTimes() {
         return isFiveTimes;
-    }
-
-    public void setFiveTimes(boolean fiveTimes) {
-        isFiveTimes = fiveTimes;
     }
 
     public Integer getNumber() {
@@ -56,4 +49,15 @@ public class Message {
         this.number = number;
     }
 
+    public HashMap<Integer, Integer> getNumbers() {
+        return numbers;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 }
