@@ -9,7 +9,7 @@ public class Main {
 
         HashMap<Integer, Integer> numbers = new HashMap<>();
 
-        Message msg = new Message(numbers, false, 0);
+        Message msg = new Message(numbers, false, 0, 0);
 
         Counter counter = new Counter(msg);
         new Thread(counter).start();
