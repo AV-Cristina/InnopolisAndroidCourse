@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * Created by Cristina on 12.06.2017.
  */
@@ -12,15 +14,18 @@ public class Generator implements Runnable{
     @Override
     public void run() {
         System.out.println("Генератор запустился");
+        long startSession = System.currentTimeMillis();
+        Random random = new Random();
 
-        while (true) {
+        while (!msg.isFiveTimes()) {
             try {
                 Thread.sleep(1000);
                 synchronized (msg) {
-                    if (msg.isFiveTimes == false){
-                        msg.setNumber((rnd(11)));
-                        msg.notifyAll();
-                    }
+                    long timeAfterStart = System.currentTimeMillis() - startSession;
+                    Integer  randomNumber = random.nextInt(99);
+                    msg.setNumber(randomNumber);
+                    msg.setTime(timeAfterStart);
+                    msg.notifyAll();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -28,8 +33,4 @@ public class Generator implements Runnable{
         }
     }
 
-    public static int rnd(int max)
-    {
-        return (int) (Math.random() * ++max) + 0;
-    }
 }
