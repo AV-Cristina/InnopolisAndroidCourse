@@ -1,38 +1,66 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.io.*;
 
 /**
- * Created by Cristina on 15.06.2017.
+ * Created by Cristina on 16.06.2017.
  */
-public class Searcher {
+public class Main{
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception{
+        System.out.println("GET");
+        get();
+        System.out.println("POST");
+        post();
+    }
+
+
+    public static void get()  throws Exception{
         System.out.print("Введите запрос: ");
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String query = reader.readLine();
+        String inputQuery = reader.readLine();
 
-        String getQuery = "GET /search?q=" + query + "&output=xml&client=test&site=operations HTTP/1.0";
-        //GET /search?q=bill+material&output=xml&client=test&site=operations HTTP/1.0
+        inputQuery.trim();
 
-        System.out.println(downloadUrl("https://www.google.ru/", query));
+//        String query1 = inputQuery.replace(' ', '+');
+//        System.out.println(inputQuery);
+
+        // String replace(char oldChar, char newChar)
+        StringBuilder query = new StringBuilder(inputQuery.replace(' ', '+'));
+
+        URL url = new URL("https://www.google.ru/search?q="+query);
+        URLConnection hc = url.openConnection();
+        hc.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(hc.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null)
+            System.out.println(inputLine);
+        in.close();
     }
 
 
-    private static InputStream downloadUrl(String urlString, String query) throws IOException {
-        URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 );
-        conn.setConnectTimeout(15000 );
-        String getQuery = query;
-        conn.setRequestMethod(getQuery);
-        conn.setDoInput(true);
-        conn.connect();
-        return conn.getInputStream();
+    public static void post()throws Exception{
+        String postData = "p=Java";
+        URL url = new URL("http://httpbin.org/post");
+        HttpURLConnection hc = (HttpURLConnection) url.openConnection();
+        hc.setRequestMethod("POST");
+        hc.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        hc.setDoOutput(true);
+        hc.setDoInput(true);
+
+        try (DataOutputStream writer = new DataOutputStream(hc.getOutputStream())) {
+            writer.writeChars(postData);
+            writer.flush();
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                hc.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null)
+            System.out.println(inputLine);
+        in.close();
     }
 }
-
