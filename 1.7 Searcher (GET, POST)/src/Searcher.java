@@ -21,7 +21,6 @@ public class Main{
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String inputQuery = reader.readLine();
-
         inputQuery.trim();
 
 //        String query1 = inputQuery.replace(' ', '+');
