@@ -27,6 +27,7 @@ public class Main {
                 System.out.println(
                         "Event kind:" + event.kind()
                                 + ". File affected: " + event.context() + ".");
+                 printFileContent(filePath, fileName);
 //                if (fileName.equals(event.context())){
 //                    System.out.println("Файл " + fileName + " был изменен:");
 //                    printFileContent(filePath, fileName);
