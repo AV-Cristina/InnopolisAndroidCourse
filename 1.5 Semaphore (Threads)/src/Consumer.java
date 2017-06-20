@@ -10,10 +10,10 @@ public class Consumer {
     private static long sum;
 
     public Consumer(){
-        this.sum = 0;
         this.xCube = 0;
         this.ySquare = 0;
         this.zSingle = 0;
+        this.sum = 0;
     }
 
     // должен вывести общий результат
@@ -38,8 +38,5 @@ public class Consumer {
         }
         System.out.println("Сумма = " + sum);
     }
-
-    public long getSum() {
-        return sum;
-    }
+    
 }
