@@ -6,11 +6,11 @@ public class Kvadrator implements Runnable {
     private Consumer consumer;
 
     public Kvadrator(Consumer consumer, long y) {
-        this.y = x;
+        this.y = y;
         this.consumer = consumer;
     }
 
     public void run(){
-        consumer.save(0, y, 0);
+        consumer.save(y, 0, 0);
     }
 }
