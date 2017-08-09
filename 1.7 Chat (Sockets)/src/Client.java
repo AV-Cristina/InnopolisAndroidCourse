@@ -7,19 +7,13 @@ import java.net.Socket;
 public class Client {
 
     public static void main(String[] ar) {
-
-        try {
-            // создаем сокет используя IP-адрес и порт сервера
-            Socket socket = new Socket("127.0.0.1", 7777);
-
-            InputStream sin = socket.getInputStream();
-            OutputStream sout = socket.getOutputStream();
-
-            DataInputStream in = new DataInputStream(sin);
-            DataOutputStream out = new DataOutputStream(sout);
-
-            BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-            String line = null;
+        try (
+              Socket socket = new Socket("127.0.0.1", 7777);
+              DataInputStream in = new DataInputStream(socket.getInputStream());
+              DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+              BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in))
+        ) {
+            String line;
 
             while (true) {
                 System.out.print("Client : ");
