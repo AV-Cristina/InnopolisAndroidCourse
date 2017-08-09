@@ -9,22 +9,16 @@ import java.net.Socket;
  * Для выхода ввести "exit"
  */
 public class Server {
+
     public static void main(String[] args) throws Exception {
-        try {
+        try(
             ServerSocket serverSocket = new ServerSocket(7777); // создаем сокет сервера
             Socket socket = serverSocket.accept(); // заставляем сервер ждать подключений
-
-            // Входной и выходной потоки сокета
-            InputStream sin = socket.getInputStream();
-            OutputStream sout = socket.getOutputStream();
-
-            // Конвертируем потоки в другой тип, чтобы обрабатывать текстовые сообщения
-            DataInputStream in = new DataInputStream(sin);
-            DataOutputStream out = new DataOutputStream(sout);
-
-            BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-
-            String line = null;
+            DataInputStream in = new DataInputStream(socket.getInputStream()); // входной поток сокета
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // выходной поток сокета
+            BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in))
+        ) {
+            String line;
 
             while (true) {
                 line = in.readUTF(); // ожидаем пока клиент пришлет строку текста и выводим
@@ -39,7 +33,7 @@ public class Server {
                     System.out.print("Server : ");
                     line = keyboard.readLine(); // ждем пока пользователь Сервера введет сообщения
 
-                    out.writeUTF(line); // отсылаем клиенту
+                    out.writeUTF(line); // отсылаем сообщение Клиенту
                     out.flush(); // заставляем поток закончить передачу данных
                 }
             }
